@@ -35,13 +35,13 @@ def get_activity_vectors(identifier_type, identifier_list):
         url = f'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/{identifier_type}/{name}/assaysummary/CSV'
 
         try:
-            activity_vectors.append(get_pubchem_activities(url))
+            activity_vectors.append(get_pubchem_activities(url, name))
         except KeyError:
             if identifier_type is 'name':
                 try:
                     url = f'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/{identifier_type}/CAS-{name}/' \
                           f'assaysummary/CSV'
-                    activity_vectors.append(get_pubchem_activities(url))
+                    activity_vectors.append(get_pubchem_activities(url, name))
                 except (KeyError, ParserError):
                     skipped.append(name)
             else:
@@ -63,4 +63,6 @@ def clean_bioprofile(bioprofile, min_actives=0):
     for col in bioprofile.columns:
         bioprofile[col] = pd.to_numeric(bioprofile[col], errors='coerce').fillna(0)
 
-    return bioprofile.transpose().loc[:, ((bioprofile > 0).sum(axis=0) >= min_actives)]
+    bioprofile = bioprofile.transpose()
+
+    return bioprofile.loc[:, ((bioprofile > 0).sum(axis=0) >= min_actives)]
