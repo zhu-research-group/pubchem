@@ -54,3 +54,10 @@ This script creates three files in the same directory as the input file:
 1. `(your datafile name)_bioprofile.csv`: A matrix of 1, 0, and -1 corresponding to active, inconclusive/missing, and inactive responses, respectively
 2. `(your datafile name)_bioprofile_heatmap.png`: An image file of a heatmap based on the bioprofile that is clustered by compounds and assays
 3. `(your datafile name)_skipped_cpds.csv`: A list of compounds that were skipped because of a web error or inability to find them on PubChem with the listed identifier (as a .csv file; if no compounds were skipped, this file will be absent.)
+
+
+### bioprofile_post.py
+
+Another script for getting data for larger database.  Uses POST requests and queries chunks at a time and caches
+ the data.  Requires all compounds to be identified by CIDs.  A helpful, fast conversion tool is available on Pubchem 
+ [here](https://pubchem.ncbi.nlm.nih.gov/idexchange/idexchange.cgi).
