@@ -108,7 +108,12 @@ def bioprofile(identifier_list,
         df = df[df.AID.isin(list(map(int, restrict_aids)))]
         df.to_csv(outfile, index=False)
 
-def make_matrix(data_file, min_actives=0, merge_dups_by='max', outfile='bioprofile_matrix.csv'):
+def make_matrix(data_file,
+                min_actives=0,
+                merge_dups_by='max',
+                outfile='bioprofile_matrix.csv',
+                identifier_list=None
+                ):
     """ will turn assay data file into wide (i.e., a matrix) format but performs all filtering in
         long format to save RAM"""
 
@@ -141,6 +146,14 @@ def make_matrix(data_file, min_actives=0, merge_dups_by='max', outfile='bioprofi
     # turn into wide format
     matrix = df.pivot(index='CID', columns='AID', values='Activity Transformed').fillna(0)
 
+    if identifier_list:
+        # add compounnds that are
+        # not in the matrix to have
+        # all zeros, then reindex
+        for cmp in identifier_list:
+            if cmp not in matrix.index:
+                matrix.loc[cmp] = [0]*matrix.shape[1]
+        matrix = matrix.loc[identifier_list]
     matrix.to_csv(outfile)
 
 
@@ -189,4 +202,4 @@ if __name__ == '__main__':
 
     # convert to a matrix that is
     # more suitable for modeling
-    make_matrix('bioprofile_long.csv', min_actives=min_actives, outfile='bioprofile_matrix.csv')
+    make_matrix('bioprofile_long.csv', min_actives=min_actives, outfile='bioprofile_matrix.csv', identifier_list=target_compounds)
