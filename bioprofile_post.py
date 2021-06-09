@@ -63,7 +63,7 @@ def bioprofile(identifier_list,
     """
 
     if identifier not in ACCEPTABLE_IDENTIFIERS:
-        raise Exception('Sorry, currently only the following identifers are valid:'.format('\n\t'.join(ACCEPTABLE_IDENTIFERS)))
+        raise Exception('Sorry, currently only the following identifers are valid:'.format('\n\t'.join(ACCEPTABLE_IDENTIFIERS)))
 
     num_compounds = len(identifier_list)
 
