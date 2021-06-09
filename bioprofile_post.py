@@ -2,7 +2,7 @@ import requests, os
 import pandas as pd
 from itertools import zip_longest
 
-ACCEPTABLE_IDENTIFERS = ['cid']
+ACCEPTABLE_IDENTIFIERS = ['cid']
 
 
 def bioassay_post(identifier_list, identifier='cid', output='csv'):
@@ -62,7 +62,7 @@ def bioprofile(identifier_list,
     :return:
     """
 
-    if identifier not in ACCEPTABLE_IDENTIFERS:
+    if identifier not in ACCEPTABLE_IDENTIFIERS:
         raise Exception('Sorry, currently only the following identifers are valid:'.format('\n\t'.join(ACCEPTABLE_IDENTIFERS)))
 
     num_compounds = len(identifier_list)
@@ -145,12 +145,18 @@ def make_matrix(data_file,
 
     # turn into wide format
     matrix = df.pivot(index='CID', columns='AID', values='Activity Transformed').fillna(0)
-
+    # add compounds that are
+    # not in the matrix to have
+    # all zeros, then reindex
     if identifier_list:
-        # add compounnds that are
-        # not in the matrix to have
-        # all zeros, then reindex
+        # need to convert to strings
+        # to make sure the proper
+        # delimiter is found.  E.g.,
+        # is cid is str format in iddentifer_list
+        # but int in the index
+        matrix.index = matrix.index.astype(str)
         for cmp in identifier_list:
+            cmp = str(cmp)
             if cmp not in matrix.index:
                 matrix.loc[cmp] = [0]*matrix.shape[1]
         matrix = matrix.loc[identifier_list]
